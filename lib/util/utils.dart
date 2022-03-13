@@ -27,6 +27,7 @@ class Utils {
   static int playerState = PlayerState.STOPPED;
   static var songLength = 0;
   static var duration = 0;
+  static String serverLink = '';
 
   static Future<List<String>> getSongs() async {
     List<String> ret = [];

@@ -14,7 +14,26 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<String> categories = ["All", "Ecstasy", "Party", "Solo"];
+  List<String> categories = [
+    "All",
+    "Anxious",
+    "Miserable",
+    "Nervous",
+    "Encouraged",
+    'Upset',
+    'Joyful',
+    'Loving'
+  ];
+  List<Color> colors = [
+    Color.fromARGB(228, 144, 145, 140),
+    Color.fromARGB(242, 38, 233, 71),
+    Color.fromARGB(255, 54, 232, 245),
+    Color.fromARGB(237, 51, 243, 60),
+    Color.fromARGB(242, 240, 221, 54),
+    Color.fromARGB(251, 204, 217, 233),
+    Color.fromARGB(235, 12, 248, 138),
+    Color.fromARGB(255, 241, 8, 66),
+  ];
 
   List<String> trendingAlbums = [
     "assets/png/home/home1.png",
@@ -70,14 +89,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   physics: const BouncingScrollPhysics(
                       parent: AlwaysScrollableScrollPhysics()),
                   scrollDirection: Axis.horizontal,
-                  itemCount: categories.length,
+                  itemCount: categories.length - 4,
                   itemBuilder: (c, i) {
                     return Container(
                       height: 38.h,
                       decoration: BoxDecoration(
                         color: selectedCategoryIndex == i
-                            ? const Color(0x66C4C4C4)
-                            : Colors.black,
+                            ? Color.fromARGB(102, 198, 231, 12)
+                            : colors[i],
                         border: Border.all(
                           color: Colors.white,
                           width: 1,
@@ -92,7 +111,55 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: GoogleFonts.workSans(
                           textStyle: TextStyle(
                             fontSize: (20 - 5).sp,
-                            color: Colors.white,
+                            color: Color.fromARGB(255, 10, 10, 10),
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      )),
+                      padding: EdgeInsets.only(left: 21.w, right: 22.w),
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return SizedBox(
+                      width: 8.w,
+                    );
+                  },
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 18.h, bottom: 15.h),
+              ),
+              SizedBox(
+                height: 30.h,
+                width: double.infinity,
+                child: ListView.separated(
+                  physics: const BouncingScrollPhysics(
+                      parent: AlwaysScrollableScrollPhysics()),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: categories.length - 4,
+                  itemBuilder: (c, i) {
+                    return Container(
+                      height: 38.h,
+                      decoration: BoxDecoration(
+                        color: selectedCategoryIndex == i + 4
+                            ? Color.fromARGB(102, 198, 231, 12)
+                            : colors[i + 4],
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(70.r),
+                        ),
+                      ),
+                      child: Center(
+                          child: Text(
+                        categories[i + 4],
+                        style: GoogleFonts.workSans(
+                          textStyle: TextStyle(
+                            fontSize: (20 - 5).sp,
+                            color: Color.fromARGB(255, 10, 10, 10),
                             fontStyle: FontStyle.normal,
                             fontWeight: FontWeight.w600,
                           ),
@@ -154,7 +221,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Padding(
                 padding: EdgeInsets.only(top: 41.h, bottom: 15.h),
                 child: Text(
-                  "Trending Songs",
+                  "Songs",
                   style: GoogleFonts.workSans(
                     textStyle: TextStyle(
                       fontSize: (24 - 5).sp,
