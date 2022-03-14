@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:music_app_ui/res/assets.dart';
+import 'package:music_app_ui/util/utils.dart';
 
 enum Tabs { home, search, playlist, saved }
 
@@ -54,7 +55,7 @@ extension TabExt on Tabs {
   }
 }
 
-class BottomNav extends StatelessWidget {
+class BottomNav extends StatefulWidget {
   final Tabs currentTab;
   final ValueChanged<Tabs> didSelectTab;
   const BottomNav(
@@ -62,7 +63,15 @@ class BottomNav extends StatelessWidget {
       : super(key: key);
 
   @override
+  State<StatefulWidget> createState() {
+    return _ButtomNavState();
+  }
+}
+
+class _ButtomNavState extends State<BottomNav> {
+  @override
   Widget build(BuildContext context) {
+    Utils.navBarState = setState;
     return Container(
       color: Colors.black,
       height: Platform.isIOS ? 85.h : 70.h,
@@ -77,7 +86,7 @@ class BottomNav extends StatelessWidget {
           showUnselectedLabels: false,
           type: BottomNavigationBarType.fixed,
           onTap: (index) {
-            didSelectTab(Tabs.values.toList()[index]);
+            widget.didSelectTab(Tabs.values.toList()[index]);
           },
           items: Tabs.values.map((tab) => _buildItem(tab, context)).toList()),
     );
@@ -86,7 +95,9 @@ class BottomNav extends StatelessWidget {
   BottomNavigationBarItem _buildItem(Tabs tab, BuildContext context) {
     return BottomNavigationBarItem(
       icon: SvgPicture.asset(
-          currentTab == tab ? tab.selectedIcon : tab.unSelectedIcon),
+          widget.currentTab == tab ? tab.selectedIcon : tab.unSelectedIcon,
+          color: widget.currentTab == tab ? Utils.color : null,
+          colorBlendMode: BlendMode.srcATop),
       label: tab.name,
     );
   }

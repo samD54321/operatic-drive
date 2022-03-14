@@ -17,7 +17,7 @@ class SearchResultScreen extends StatefulWidget {
 class _SearchResultScreenState extends State<SearchResultScreen> {
   @override
   Widget build(BuildContext context) {
-    Utils.setState = setState;
+    Utils.searchResState = setState;
 
     return Scaffold(
       backgroundColor: Colors.black,

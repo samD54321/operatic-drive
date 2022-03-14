@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flute_music_player/flute_music_player.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:music_app_ui/models/album_model.dart';
 import 'package:music_app_ui/models/song_model.dart';
@@ -9,6 +12,28 @@ final FlutterAudioQuery audioQuery = FlutterAudioQuery();
 final tagger = Audiotagger();
 MusicFinder audioPlayer = MusicFinder();
 List<String> allSongs = [''];
+List<SongInfo> songinfos = [];
+
+List<String> categories = [
+  "All",
+  "Anxious",
+  "Miserable",
+  "Nervous",
+  "Encouraged",
+  'Upset',
+  'Joyful',
+  'Loving'
+];
+List<Color> colors = [
+  Color.fromARGB(228, 144, 145, 140),
+  Color.fromARGB(242, 38, 233, 71),
+  Color.fromARGB(255, 54, 232, 245),
+  Color.fromARGB(237, 51, 243, 60),
+  Color.fromARGB(242, 240, 221, 54),
+  Color.fromARGB(251, 204, 217, 233),
+  Color.fromARGB(235, 12, 248, 138),
+  Color.fromARGB(255, 241, 8, 66),
+];
 
 class PlayerState {
   static const PLAYING = 1;
@@ -21,17 +46,37 @@ class PlayerState {
 }
 
 class Utils {
-  static dynamic setState = (f) {};
+  static dynamic navBarState = (f) {};
   static dynamic playerSetState = (f) {};
+  static dynamic playListState = (f) {};
+  static dynamic playingState = (f) {};
+
+  static dynamic homeState = (f) {};
+  static dynamic searchState = (f) {};
+  static dynamic searchResState = (f) {};
+  static dynamic bmState = (f) {};
 
   static int playerState = PlayerState.STOPPED;
   static var songLength = 0;
   static var duration = 0;
   static String serverLink = '';
+  static Color color = colors[0];
+
+  static setState(f) {
+    navBarState(f);
+    playListState(f);
+    playerSetState(f);
+    playingState(f);
+    searchState(f);
+    searchResState(f);
+    bmState(f);
+    homeState(f);
+  }
 
   static Future<List<String>> getSongs() async {
     List<String> ret = [];
     List<SongInfo> songs = await audioQuery.getSongs();
+    songinfos = songs;
     ret = songs.map((SongInfo s) {
       return s.filePath;
     }).toList();
@@ -108,6 +153,7 @@ class Utils {
   static Future<SongModel> urlToSong(url, {i = 0}) async {
     // Map? map = await tagger.readTagsAsMap(path: url);
     final Map? map = {'path': url};
+    SongInfo info = songinfos.firstWhere((element) => element.filePath == url);
 
     for (String tag in [
       'album',
@@ -140,9 +186,9 @@ class Utils {
 
     return SongModel(
         id: i,
-        album: map?['album'],
-        title: map?['title'],
-        year: map?['year'],
+        album: info.album,
+        title: info.title,
+        year: info.year,
         image: map?['artwork'],
         path: url,
         arousal: map?['arousal'],
@@ -170,9 +216,22 @@ class Utils {
     return AlbumModel(id: 0, name: name, songs: songs);
   }
 
+  static setupAlbumns(category) async {
+    int chunks = (allSongs.length / (categories.length - 1)).round();
+    List<SongModel> songs = [];
+    for (int i = 0; i < chunks; i++) {
+      songs.add(
+          await urlToSong(allSongs[Random().nextInt(allSongs.length - 1)]));
+    }
+    PlayerState.currentAlbum = AlbumModel(id: 0, name: category, songs: songs);
+    PlayerState.currentSong = PlayerState.currentAlbum.songs[0];
+    print(PlayerState.currentAlbum.songs.length);
+    Utils.setState(() {});
+  }
+
   static initPlayer() async {
     audioPlayer.setDurationHandler((duration) {
-      playerSetState(() {
+      Utils.setState(() {
         PlayerState.songLength = duration;
         print("Setting duration ${PlayerState.songLength.inSeconds}");
       });
@@ -181,7 +240,7 @@ class Utils {
       next();
     });
     audioPlayer.setPositionHandler((position) {
-      playerSetState(() {
+      Utils.setState(() {
         PlayerState.position = position;
 
         print(position.inSeconds);

@@ -19,8 +19,7 @@ class _PlayingNowScreenState extends State<PlayingNowScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Utils.setState = setState;
-    Utils.playerSetState = setState;
+    Utils.playingState = setState;
     print(
         ' position: ${(PlayerState.position.inSeconds / PlayerState.songLength.inSeconds) * 1000}');
     return Scaffold(
@@ -34,7 +33,7 @@ class _PlayingNowScreenState extends State<PlayingNowScreen> {
             Assets.BACK,
             height: 24,
             width: 24,
-            color: const Color(0xffffffff),
+            color: Utils.color,
             // fit: BoxFit.fill,
           ),
         ),
@@ -47,9 +46,9 @@ class _PlayingNowScreenState extends State<PlayingNowScreen> {
           children: [
             Expanded(
               child: Container(
-                  padding: EdgeInsets.only(top: 16.h, left: 20.w, right: 20.w),
-                  child:
-                      SvgPicture.asset(Assets.SONG, height: 100, width: 100)),
+                padding: EdgeInsets.only(top: 16.h, left: 20.w, right: 20.w),
+                child: SvgPicture.asset(Assets.SONG, height: 100, width: 100),
+              ),
             ),
             SizedBox(height: 22.h),
             Padding(
@@ -59,12 +58,14 @@ class _PlayingNowScreenState extends State<PlayingNowScreen> {
                 children: [
                   SvgPicture.asset(
                     Assets.HEART_OUTLINED,
+                    color: Utils.color,
+                    colorBlendMode: BlendMode.srcATop,
                     height: 24.w,
                     width: 24.w,
                     fit: BoxFit.fill,
                   ),
                   Text(
-                    PlayerState.currentSong.artist,
+                    PlayerState.currentSong.title,
                     textAlign: TextAlign.center,
                     style: GoogleFonts.montserrat(
                       textStyle: TextStyle(
@@ -77,6 +78,8 @@ class _PlayingNowScreenState extends State<PlayingNowScreen> {
                   ),
                   SvgPicture.asset(
                     Assets.DOWNLOAD,
+                    color: Utils.color,
+                    colorBlendMode: BlendMode.srcATop,
                     height: 24.w,
                     width: 24.w,
                     fit: BoxFit.fill,
@@ -109,7 +112,7 @@ class _PlayingNowScreenState extends State<PlayingNowScreen> {
                         100,
                     min: 0,
                     max: 100,
-                    activeColor: Colors.white,
+                    activeColor: Utils.color,
                     inactiveColor: const Color(0x4fffffff),
                     label: '${valueHolder.round()}',
                     onChanged: (double newValue) {
@@ -145,7 +148,7 @@ class _PlayingNowScreenState extends State<PlayingNowScreen> {
                     style: GoogleFonts.workSans(
                       textStyle: TextStyle(
                         fontSize: (18 - 5).sp,
-                        color: Colors.white,
+                        color: Utils.color,
                         fontStyle: FontStyle.normal,
                         fontWeight: FontWeight.w400,
                       ),
@@ -157,7 +160,7 @@ class _PlayingNowScreenState extends State<PlayingNowScreen> {
                     style: GoogleFonts.workSans(
                       textStyle: TextStyle(
                         fontSize: (18 - 5).sp,
-                        color: Colors.white,
+                        color: Utils.color,
                         fontStyle: FontStyle.normal,
                         fontWeight: FontWeight.w400,
                       ),
@@ -174,6 +177,8 @@ class _PlayingNowScreenState extends State<PlayingNowScreen> {
                 children: [
                   SvgPicture.asset(
                     Assets.SHUFFLE,
+                    color: Utils.color,
+                    colorBlendMode: BlendMode.srcATop,
                     height: 24.w,
                     width: 24.w,
                     fit: BoxFit.fill,
@@ -195,14 +200,18 @@ class _PlayingNowScreenState extends State<PlayingNowScreen> {
                         ? Container(
                             width: 54.w,
                             height: 54.w,
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               image: DecorationImage(
-                                  image: AssetImage(Assets.PAUSE),
+                                  colorFilter: ColorFilter.mode(
+                                      Utils.color, BlendMode.srcATop),
+                                  image: const AssetImage(Assets.PAUSE),
                                   fit: BoxFit.fitHeight),
                             ),
                           )
                         : SvgPicture.asset(
                             Assets.PLAY,
+                            color: Utils.color,
+                            colorBlendMode: BlendMode.srcATop,
                             width: 54.w,
                             height: 54.w,
                             fit: BoxFit.fill,

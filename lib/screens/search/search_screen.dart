@@ -23,7 +23,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Utils.setState = setState;
+    Utils.searchState = setState;
 
     return Offstage(
       offstage: !widget.isCurrent,
@@ -40,7 +40,7 @@ class _SearchScreenState extends State<SearchScreen> {
               Assets.BACK,
               height: 24,
               width: 24,
-              color: const Color(0xffffffff),
+              color: Utils.color,
               // fit: BoxFit.fill,
             ),
           ),

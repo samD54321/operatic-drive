@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:music_app_ui/screens/playing_now/playing_now_screen.dart';
+import 'package:music_app_ui/screens/playlist/playlist_screen.dart';
 import 'package:music_app_ui/screens/root/root_widget.dart';
 import 'package:music_app_ui/screens/search_result/search_result_screen.dart';
 import 'package:music_app_ui/screens/splashscreen/splash_screen.dart';
@@ -36,13 +37,17 @@ class ScreenRouter {
           page: const PlayingNowScreen(),
         );
 
-      case Routes.home:
+      case Routes.playlist:
         return FadeRoute(
-          page: const RootWidget(),
+          page: const PlayListScreen(
+            isCurrent: true,
+          ),
         );
       case Routes.search:
         return FadeRoute(
-          page:  SearchScreen(isCurrent: false,),
+          page: SearchScreen(
+            isCurrent: false,
+          ),
         );
       case Routes.home:
         return FadeRoute(

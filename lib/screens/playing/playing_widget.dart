@@ -107,14 +107,18 @@ class _PlayingWidgetsState extends State<PlayingWidget> {
                             ? Container(
                                 width: 54.w,
                                 height: 54.w,
-                                decoration: const BoxDecoration(
+                                decoration: BoxDecoration(
                                   image: DecorationImage(
-                                      image: AssetImage(Assets.PAUSE),
+                                      colorFilter: ColorFilter.mode(
+                                          Utils.color, BlendMode.srcATop),
+                                      image: const AssetImage(Assets.PAUSE),
                                       fit: BoxFit.fitHeight),
                                 ),
                               )
                             : SvgPicture.asset(
                                 Assets.PLAY,
+                                color: Utils.color,
+                                colorBlendMode: BlendMode.srcATop,
                                 width: 54.w,
                                 height: 54.w,
                                 fit: BoxFit.fill,
@@ -148,7 +152,6 @@ class _PlayingWidgetsState extends State<PlayingWidget> {
                               Utils.next();
                             });
                           }),
-                    
                     ],
                   ),
                 )
@@ -165,12 +168,10 @@ class _PlayingWidgetsState extends State<PlayingWidget> {
                 color: Colors.white,
               ),
               Container(
-                width: MediaQuery.of(context).size.width 
-                // *
-                //     (PlayerState.position.inSeconds /
-                //         PlayerState.songLength.inSeconds)
-                ,
-                color: const Color(0xffB87629),
+                width: MediaQuery.of(context).size.width *
+                    (PlayerState.position.inSeconds /
+                        PlayerState.songLength.inSeconds),
+                color: Utils.color,
               )
             ],
           ),

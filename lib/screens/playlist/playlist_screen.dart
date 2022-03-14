@@ -25,11 +25,11 @@ class _PlayListScreenState extends State<PlayListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Utils.setState = setState;
-
+    Utils.playListState = setState;
     return Offstage(
       offstage: !widget.isCurrent,
       child: Scaffold(
+
         backgroundColor: Colors.black,
         appBar: AppBar(
           leading: GestureDetector(
@@ -42,7 +42,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
               Assets.BACK,
               height: 24,
               width: 24,
-              color: const Color(0xffffffff),
+              color: Utils.color,
               // fit: BoxFit.fill,
             ),
           ),
@@ -52,88 +52,76 @@ class _PlayListScreenState extends State<PlayListScreen> {
         ),
         body: Column(
           children: [
-            SizedBox(height: 8.h),
-            Container(
-              height: 127.r,
-              padding: EdgeInsets.only(left: 20.w, right: 20.w),
-              child: Row(
-                children: [
-                  Container(
-                    width: 127.r,
-                    height: 127.r,
-                    margin: EdgeInsets.only(right: 14.w),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.r),
-                      image: DecorationImage(
-                        image: AssetImage(PlayerState.currentSong.image),
-                        fit: BoxFit.cover,
+            // SizedBox(height: 8.h),
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              color: Utils.color,
+              elevation: 3,
+              margin: const EdgeInsets.all(10),
+              child: Container(
+                height: 127.r,
+                padding: EdgeInsets.only(
+                    left: 20.w, right: 20.w, top: 20.w, bottom: 20.w),
+                child: Row(
+                  children: [
+                    Container(
+                      // color: Colors.white,
+                      width: 127.r,
+                      height: 127.r,
+                      margin: EdgeInsets.only(right: 14.w),
+                      decoration: BoxDecoration(
+                        // color: Colors.white,
+                        borderRadius: BorderRadius.circular(16.r),
+                        image: DecorationImage(
+                          image: AssetImage(PlayerState.currentSong.image),
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Album - ${PlayerState.currentAlbum.songs.length} songs - ${PlayerState.currentSong.year}",
-                        style: GoogleFonts.montserrat(
-                          textStyle: TextStyle(
-                            fontSize: (14 - 5).sp,
-                            color: Colors.white,
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        PlayerState.currentAlbum.name,
-                        style: GoogleFonts.montserrat(
-                          textStyle: TextStyle(
-                            fontSize: (24 - 5).sp,
-                            color: Colors.white,
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        'Mix Operatic Drive',
-                        style: GoogleFonts.montserrat(
-                          textStyle: TextStyle(
-                            fontSize: (14 - 5).sp,
-                            color: Colors.white,
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                      const Spacer(),
-                      Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(bottom: 2.h, right: 4.w),
-                            child: SvgPicture.asset(
-                              Assets.HEART_OUTLINED,
-                              height: 24.w,
-                              width: 24.w,
-                              fit: BoxFit.fill,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Album - ${PlayerState.currentAlbum.songs.length} songs - ${PlayerState.currentSong.year}",
+                          style: GoogleFonts.montserrat(
+                            textStyle: TextStyle(
+                              fontSize: (14 - 5).sp,
+                              color: Colors.white,
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.w400,
                             ),
                           ),
-                          SizedBox(width: 19.w),
-                          Padding(
-                            padding: EdgeInsets.only(bottom: 2.h, right: 4.w),
-                            child: SvgPicture.asset(
-                              Assets.DOWNLOAD,
-                              height: 24.w,
-                              width: 24.w,
-                              fit: BoxFit.fill,
+                        ),
+                        Text(
+                          PlayerState.currentAlbum.name,
+                          style: GoogleFonts.montserrat(
+                            textStyle: TextStyle(
+                              fontSize: (24 - 5).sp,
+                              color: Colors.white,
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
-                        ],
-                      )
-                    ],
-                  )
-                ],
+                        ),
+                        Text(
+                          'Mix Operatic Drive',
+                          style: GoogleFonts.montserrat(
+                            textStyle: TextStyle(
+                              fontSize: (14 - 5).sp,
+                              color: Colors.white,
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
             Expanded(
@@ -144,6 +132,12 @@ class _PlayListScreenState extends State<PlayListScreen> {
                 itemBuilder: (c, i) {
                   return InkWell(
                     onTap: () {
+                      Utils.setState(() {
+                        Utils.stop();
+                        PlayerState.currentSong = PlayerState.currentAlbum.songs
+                            .firstWhere((element) => element.id == i);
+                        Utils.play();
+                      });
                       GetIt.I
                           .get<NavigationService>()
                           .to(routeName: Routes.playingNow);

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hexagon/hexagon.dart';
 import 'package:music_app_ui/res/assets.dart';
+import 'package:music_app_ui/util/navigation/navigation_service.dart';
+import 'package:music_app_ui/util/navigation/routes.dart';
 import 'package:music_app_ui/util/utils.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,27 +18,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<String> categories = [
-    "All",
-    "Anxious",
-    "Miserable",
-    "Nervous",
-    "Encouraged",
-    'Upset',
-    'Joyful',
-    'Loving'
-  ];
-  List<Color> colors = [
-    Color.fromARGB(228, 144, 145, 140),
-    Color.fromARGB(242, 38, 233, 71),
-    Color.fromARGB(255, 54, 232, 245),
-    Color.fromARGB(237, 51, 243, 60),
-    Color.fromARGB(242, 240, 221, 54),
-    Color.fromARGB(251, 204, 217, 233),
-    Color.fromARGB(235, 12, 248, 138),
-    Color.fromARGB(255, 241, 8, 66),
-  ];
-
   List<String> trendingAlbums = [
     "assets/png/home/home1.png",
     "assets/png/home/home2.png",
@@ -50,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int selectedCategoryIndex = 1;
   @override
   Widget build(BuildContext context) {
-    Utils.setState = setState;
+    Utils.homeState = setState;
     Utils.initPlayer();
     return Offstage(
       offstage: !widget.isCurrent,
@@ -58,27 +41,27 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.black,
         appBar: AppBar(
           title: Text(
-            "OPERATIC DRIVE",
-            style: GoogleFonts.montserrat(
+            "O P E R A T I C  D R I V E",
+            style: GoogleFonts.sourceSansPro(
               textStyle: TextStyle(
-                fontSize: (26 - 5).sp,
+                fontSize: 26.sp,
                 color: Colors.white,
                 fontStyle: FontStyle.normal,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w900,
               ),
             ),
           ),
           automaticallyImplyLeading: false,
           centerTitle: false,
           backgroundColor: Colors.black,
-          elevation: 0,
+          elevation: 3,
         ),
         body: SafeArea(
           child: ListView(
             physics: const BouncingScrollPhysics(
                 parent: AlwaysScrollableScrollPhysics()),
             padding: EdgeInsets.only(
-              top: 19.h,
+              top: 30.h,
               left: 20.w,
             ),
             children: [
@@ -91,33 +74,44 @@ class _HomeScreenState extends State<HomeScreen> {
                   scrollDirection: Axis.horizontal,
                   itemCount: categories.length - 4,
                   itemBuilder: (c, i) {
-                    return Container(
-                      height: 38.h,
-                      decoration: BoxDecoration(
-                        color: selectedCategoryIndex == i
-                            ? Color.fromARGB(102, 198, 231, 12)
-                            : colors[i],
-                        border: Border.all(
-                          color: Colors.white,
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(70.r),
-                        ),
-                      ),
-                      child: Center(
-                          child: Text(
-                        categories[i],
-                        style: GoogleFonts.workSans(
-                          textStyle: TextStyle(
-                            fontSize: (20 - 5).sp,
-                            color: Color.fromARGB(255, 10, 10, 10),
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w600,
+                    return InkWell(
+                      child: Container(
+                        height: 38.h,
+                        decoration: BoxDecoration(
+                          color: colors[i],
+                          border: Border.all(
+                            color: selectedCategoryIndex == i
+                                ? Colors.cyanAccent
+                                : Colors.white,
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(70.r),
                           ),
                         ),
-                      )),
-                      padding: EdgeInsets.only(left: 21.w, right: 22.w),
+                        child: Center(
+                            child: Text(
+                          categories[i],
+                          style: GoogleFonts.workSans(
+                            textStyle: TextStyle(
+                              fontSize: (20 - 5).sp,
+                              color: Color.fromARGB(255, 10, 10, 10),
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        )),
+                        padding: EdgeInsets.only(left: 21.w, right: 22.w),
+                      ),
+                      onTap: () {
+                        setState(() {
+                          selectedCategoryIndex = i;
+                        });
+                        Utils.setState(() {
+                          Utils.color = colors[i];
+                          Utils.setupAlbumns(categories[i]);
+                        });
+                      },
                     );
                   },
                   separatorBuilder: (BuildContext context, int index) {
@@ -139,33 +133,44 @@ class _HomeScreenState extends State<HomeScreen> {
                   scrollDirection: Axis.horizontal,
                   itemCount: categories.length - 4,
                   itemBuilder: (c, i) {
-                    return Container(
-                      height: 38.h,
-                      decoration: BoxDecoration(
-                        color: selectedCategoryIndex == i + 4
-                            ? Color.fromARGB(102, 198, 231, 12)
-                            : colors[i + 4],
-                        border: Border.all(
-                          color: Colors.white,
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(70.r),
-                        ),
-                      ),
-                      child: Center(
-                          child: Text(
-                        categories[i + 4],
-                        style: GoogleFonts.workSans(
-                          textStyle: TextStyle(
-                            fontSize: (20 - 5).sp,
-                            color: Color.fromARGB(255, 10, 10, 10),
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w600,
+                    return InkWell(
+                      child: Container(
+                        height: 38.h,
+                        decoration: BoxDecoration(
+                          color: colors[i + 4],
+                          border: Border.all(
+                            color: selectedCategoryIndex == i + 4
+                                ? Colors.cyanAccent
+                                : Colors.white,
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(70.r),
                           ),
                         ),
-                      )),
-                      padding: EdgeInsets.only(left: 21.w, right: 22.w),
+                        child: Center(
+                            child: Text(
+                          categories[i + 4],
+                          style: GoogleFonts.workSans(
+                            textStyle: TextStyle(
+                              fontSize: (20 - 5).sp,
+                              color: Color.fromARGB(255, 10, 10, 10),
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        )),
+                        padding: EdgeInsets.only(left: 21.w, right: 22.w),
+                      ),
+                      onTap: () {
+                        Utils.setState(() {
+                          Utils.color = colors[i + 4];
+                          setState(() {
+                            selectedCategoryIndex = i + 4;
+                          });
+                          Utils.setupAlbumns(categories[i + 4]);
+                        });
+                      },
                     );
                   },
                   separatorBuilder: (BuildContext context, int index) {
@@ -263,6 +268,37 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   },
                 ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 18.h, bottom: 15.h),
+                child: Text(
+                  "Arousal Valence Wheel",
+                  style: GoogleFonts.workSans(
+                    textStyle: TextStyle(
+                      fontSize: (24 - 5).sp,
+                      color: Colors.white,
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 18.h, bottom: 18.h),
+                child: HexagonGrid(
+                  hexType: HexagonType.FLAT,
+                  depth: 3,
+                  buildTile: (coordinates) => HexagonWidgetBuilder(
+                    padding: 2.0,
+                    cornerRadius: 9.0,
+                    color: colors[coordinates.r % 8],
+                    child: Text('${coordinates.q}, ${coordinates.r}'),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 127.r,
+                width: double.infinity,
               ),
             ],
           ),

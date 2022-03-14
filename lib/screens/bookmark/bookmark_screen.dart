@@ -28,7 +28,7 @@ class _BookMarkScreenState extends State<BookMarkScreen> {
   ];
   @override
   Widget build(BuildContext context) {
-    Utils.setState = setState;
+    Utils.bmState = setState;
 
     return Offstage(
       offstage: !widget.isCurrent,
@@ -55,7 +55,7 @@ class _BookMarkScreenState extends State<BookMarkScreen> {
                 Assets.BACK,
                 height: 24,
                 width: 24,
-                color: const Color(0xffffffff),
+                color: Utils.color,
                 // fit: BoxFit.fill,
               ),
             ),
@@ -122,7 +122,7 @@ class _BookMarkScreenState extends State<BookMarkScreen> {
                         style: GoogleFonts.montserrat(
                           textStyle: TextStyle(
                             fontSize: (20 - 5).sp,
-                            color: const Color(0xffB87629),
+                            color: Utils.color,
                             fontStyle: FontStyle.normal,
                             fontWeight: FontWeight.w400,
                           ),
